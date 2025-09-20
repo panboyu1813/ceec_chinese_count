@@ -33,7 +33,7 @@
                 <button data-subject="國文" class="tab-button text-gray-600 hover:text-gray-800 py-2 px-4 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500">國文</button>
                 <button data-subject="英文" class="tab-button text-gray-600 hover:text-gray-800 py-2 px-4 rounded-full transition-all duration-200">英文</button>
                 <button data-subject="數學A" class="tab-button text-gray-600 hover:text-gray-800 py-2 px-4 rounded-full transition-all duration-200">數學A</button>
-                <button data-subject="數學B" class="tab-button text-gray-600 hover:text-gray-800 py-2 px-4 rounded-full transition-all duration-200">數學B</button>
+                <button data-subject="數學B" class="tab-6utton text-gray-600 hover:text-gray-800 py-2 px-4 rounded-full transition-all duration-200">數學B</button>
                 <button data-subject="社會" class="tab-button text-gray-600 hover:text-gray-800 py-2 px-4 rounded-full transition-all duration-200">社會</button>
                 <button data-subject="自然" class="tab-button text-gray-600 hover:text-gray-800 py-2 px-4 rounded-full transition-all duration-200">自然</button>
             </div>
@@ -53,6 +53,20 @@
                     <div id="writingScoreContainer" class="mb-6">
                         <label for="writingScore" class="block text-gray-600 font-medium mb-2">國寫原始分數<span class="text-xs text-gray-400 ml-2">(0-50)</span></label>
                         <input type="number" id="writingScore" class="w-full p-3 rounded-md border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200" placeholder="0-50" min="0" max="50">
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">選擇參考學測年份</h3>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <label class="flex items-center space-x-2 cursor-pointer p-3 rounded-md border-2 border-gray-300 hover:border-blue-400 transition-all duration-200">
+                            <input type="radio" name="year" value="114" checked class="form-radio text-blue-500 ring-blue-500">
+                            <span class="text-gray-700">114 年學測</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer p-3 rounded-md border-2 border-gray-300 hover:border-blue-400 transition-all duration-200">
+                            <input type="radio" name="year" value="113" class="form-radio text-blue-500 ring-blue-500">
+                            <span class="text-gray-700">113 年學測</span>
+                        </label>
                     </div>
                 </div>
             </div>
@@ -89,11 +103,27 @@
 
     <script>
         const subjectData = {
-            // 這裡沿用你原本的 subjectData (114/113年度) ...
-            // 為了簡潔我省略內容，只要保留原本就好
+            '114': {
+                '國文': { type: 'composite', max: { comp: 100, writing: 50 }, gradeRanges: [{ level: 15, min: 74.06, max: 100.00 }, { level: 14, min: 68.77, max: 74.06 }, { level: 13, min: 63.48, max: 68.77 }, { level: 12, min: 58.19, max: 63.48 }, { level: 11, min: 52.90, max: 58.19 }, { level: 10, min: 47.61, max: 52.90 }, { level: 9, min: 42.32, max: 47.61 }, { level: 8, min: 37.03, max: 42.32 }, { level: 7, min: 31.74, max: 37.03 }, { level: 6, min: 26.45, max: 31.74 }, { level: 5, min: 21.16, max: 26.45 }, { level: 4, min: 15.87, max: 21.16 }, { level: 3, min: 10.58, max: 15.87 }, { level: 2, min: 5.29, max: 10.58 }, { level: 1, min: 0.00, max: 5.29 }], standard: { '頂標': 13, '前標': 12, '均標': 10, '後標': 9, '底標': 7 } },
+                '英文': { type: 'single', max: { single: 100 }, gradeRanges: [{ level: 15, min: 86.39, max: 100.00 }, { level: 14, min: 80.22, max: 86.39 }, { level: 13, min: 74.05, max: 80.22 }, { level: 12, min: 67.88, max: 74.05 }, { level: 11, min: 61.71, max: 67.88 }, { level: 10, min: 55.54, max: 61.71 }, { level: 9, min: 49.37, max: 55.54 }, { level: 8, min: 43.19, max: 49.37 }, { level: 7, min: 37.02, max: 43.19 }, { level: 6, min: 30.85, max: 37.02 }, { level: 5, min: 24.68, max: 30.85 }, { level: 4, min: 18.51, max: 24.68 }, { level: 3, min: 12.34, max: 18.51 }, { level: 2, min: 6.17, max: 12.34 }, { level: 1, min: 0.00, max: 6.17 }], standard: { '頂標': 13, '前標': 11, '均標': 8, '後標': 4, '底標': 3 } },
+                '數學A': { type: 'single', max: { single: 100 }, gradeRanges: [{ level: 15, min: 85.77, max: 100.00 }, { level: 14, min: 79.65, max: 85.77 }, { level: 13, min: 73.52, max: 79.65 }, { level: 12, min: 67.40, max: 73.52 }, { level: 11, min: 61.27, max: 67.40 }, { level: 10, min: 55.14, max: 61.27 }, { level: 9, min: 49.01, max: 55.14 }, { level: 8, min: 42.89, max: 49.01 }, { level: 7, min: 36.76, max: 42.89 }, { level: 6, min: 30.63, max: 36.76 }, { level: 5, min: 24.51, max: 30.63 }, { level: 4, min: 18.38, max: 24.51 }, { level: 3, min: 12.25, max: 18.38 }, { level: 2, min: 6.13, max: 12.25 }, { level: 1, min: 0.00, max: 6.13 }], standard: { '頂標': 11, '前標': 9, '均標': 6, '後標': 4, '底標': 3 } },
+                '數學B': { type: 'single', max: { single: 100 }, gradeRanges: [{ level: 15, min: 88.06, max: 100.00 }, { level: 14, min: 81.77, max: 88.06 }, { level: 13, min: 75.48, max: 81.77 }, { level: 12, min: 69.19, max: 75.48 }, { level: 11, min: 62.90, max: 69.19 }, { level: 10, min: 56.61, max: 62.90 }, { level: 9, min: 50.32, max: 56.61 }, { level: 8, min: 44.03, max: 50.32 }, { level: 7, min: 37.74, max: 44.03 }, { level: 6, min: 31.45, max: 37.74 }, { level: 5, min: 25.16, max: 31.45 }, { level: 4, min: 18.87, max: 25.16 }, { level: 3, min: 12.58, max: 18.87 }, { level: 2, min: 6.29, max: 12.58 }, { level: 1, min: 0.00, max: 6.29 }], standard: { '頂標': 12, '前標': 10, '均標': 6, '後標': 4, '底標': 3 } },
+                '社會': { type: 'single', max: { single: 144 }, gradeRanges: [{ level: 15, min: 107.65, max: 144.00 }, { level: 14, min: 99.96, max: 107.65 }, { level: 13, min: 92.27, max: 99.96 }, { level: 12, min: 84.58, max: 92.27 }, { level: 11, min: 76.89, max: 84.58 }, { level: 10, min: 69.20, max: 76.89 }, { level: 9, min: 61.51, max: 69.20 }, { level: 8, min: 53.83, max: 61.51 }, { level: 7, min: 46.14, max: 53.83 }, { level: 6, min: 38.45, max: 46.14 }, { level: 5, min: 30.76, max: 38.45 }, { level: 4, min: 23.07, max: 30.76 }, { level: 3, min: 15.38, max: 23.07 }, { level: 2, min: 7.69, max: 15.38 }, { level: 1, min: 0.00, max: 7.69 }], standard: { '頂標': 13, '前標': 12, '均標': 10, '後標': 8, '底標': 7 } },
+                '自然': { type: 'single', max: { single: 128 }, gradeRanges: [{ level: 15, min: 110.25, max: 128.00 }, { level: 14, min: 102.37, max: 110.25 }, { level: 13, min: 94.49, max: 102.37 }, { level: 12, min: 86.62, max: 94.49 }, { level: 11, min: 78.74, max: 86.62 }, { level: 10, min: 70.87, max: 78.74 }, { level: 9, min: 63.00, max: 70.87 }, { level: 8, min: 55.12, max: 63.00 }, { level: 7, min: 47.25, max: 55.12 }, { level: 6, min: 39.37, max: 47.25 }, { level: 5, min: 31.50, max: 39.37 }, { level: 4, min: 23.62, max: 31.50 }, { level: 3, min: 15.75, max: 23.62 }, { level: 2, min: 7.87, max: 15.75 }, { level: 1, min: 0.00, max: 7.87 }], standard: { '頂標': 13, '前標': 12, '均標': 9, '後標': 7, '底標': 5 } }
+            },
+            '113': {
+                '國文': { type: 'composite', max: { comp: 100, writing: 50 }, gradeRanges: [{ level: 15, min: 74.06, max: 100.00 }, { level: 14, min: 68.77, max: 74.06 }, { level: 13, min: 63.48, max: 68.77 }, { level: 12, min: 58.19, max: 63.48 }, { level: 11, min: 52.90, max: 58.19 }, { level: 10, min: 47.61, max: 52.90 }, { level: 9, min: 42.32, max: 47.61 }, { level: 8, min: 37.03, max: 42.32 }, { level: 7, min: 31.74, max: 37.03 }, { level: 6, min: 26.45, max: 31.74 }, { level: 5, min: 21.16, max: 26.45 }, { level: 4, min: 15.87, max: 21.16 }, { level: 3, min: 10.58, max: 15.87 }, { level: 2, min: 5.29, max: 10.58 }, { level: 1, min: 0.00, max: 5.29 }], standard: { '頂標': 13, '前標': 12, '均標': 11, '後標': 9, '底標': 8 } },
+                '英文': { type: 'single', max: { single: 100 }, gradeRanges: [{ level: 15, min: 86.74, max: 100.00 }, { level: 14, min: 80.55, max: 86.74 }, { level: 13, min: 74.35, max: 80.55 }, { level: 12, min: 68.16, max: 74.35 }, { level: 11, min: 61.96, max: 68.16 }, { level: 10, min: 55.76, max: 61.96 }, { level: 9, min: 49.57, max: 55.76 }, { level: 8, min: 43.37, max: 49.57 }, { level: 7, min: 37.18, max: 43.37 }, { level: 6, min: 30.98, max: 37.18 }, { level: 5, min: 24.78, max: 30.98 }, { level: 4, min: 18.59, max: 24.78 }, { level: 3, min: 12.39, max: 18.59 }, { level: 2, min: 6.20, max: 12.39 }, { level: 1, min: 0.00, max: 6.20 }], standard: { '頂標': 13, '前標': 11, '均標': 8, '後標': 5, '底標': 3 } },
+                '數學A': { type: 'single', max: { single: 100 }, gradeRanges: [{ level: 15, min: 86.34, max: 100.00 }, { level: 14, min: 80.18, max: 86.34 }, { level: 13, min: 74.01, max: 80.18 }, { level: 12, min: 67.84, max: 74.01 }, { level: 11, min: 61.67, max: 67.84 }, { level: 10, min: 55.51, max: 61.67 }, { level: 9, min: 49.34, max: 55.51 }, { level: 8, min: 43.17, max: 49.34 }, { level: 7, min: 37.00, max: 43.17 }, { level: 6, min: 30.83, max: 37.00 }, { level: 5, min: 24.67, max: 30.83 }, { level: 4, min: 18.50, max: 24.67 }, { level: 3, min: 12.33, max: 18.50 }, { level: 2, min: 6.17, max: 12.33 }, { level: 1, min: 0.00, max: 6.17 }], standard: { '頂標': 12, '前標': 10, '均標': 7, '後標': 5, '底標': 3 } },
+                '數學B': { type: 'single', max: { single: 100 }, gradeRanges: [{ level: 15, min: 86.10, max: 100.00 }, { level: 14, min: 79.95, max: 86.10 }, { level: 13, min: 73.80, max: 79.95 }, { level: 12, min: 67.65, max: 73.80 }, { level: 11, min: 61.50, max: 67.65 }, { level: 10, min: 55.35, max: 61.50 }, { level: 9, min: 49.20, max: 55.35 }, { level: 8, min: 43.05, max: 49.20 }, { level: 7, min: 36.90, max: 43.05 }, { level: 6, min: 30.75, max: 36.90 }, { level: 5, min: 24.60, max: 30.75 }, { level: 4, min: 18.45, max: 24.60 }, { level: 3, min: 12.30, max: 18.45 }, { level: 2, min: 6.15, max: 12.30 }, { level: 1, min: 0.00, max: 6.15 }], standard: { '頂標': 12, '前標': 9, '均標': 6, '後標': 4, '底標': 3 } },
+                '社會': { type: 'single', max: { single: 144 }, gradeRanges: [{ level: 15, min: 113.91, max: 144.00 }, { level: 14, min: 105.78, max: 113.91 }, { level: 13, min: 97.64, max: 105.78 }, { level: 12, min: 89.50, max: 97.64 }, { level: 11, min: 81.37, max: 89.50 }, { level: 10, min: 73.23, max: 81.37 }, { level: 9, min: 65.09, max: 73.23 }, { level: 8, min: 56.96, max: 65.09 }, { level: 7, min: 48.82, max: 56.96 }, { level: 6, min: 40.68, max: 48.82 }, { level: 5, min: 32.55, max: 40.68 }, { level: 4, min: 24.41, max: 32.55 }, { level: 3, min: 16.27, max: 24.41 }, { level: 2, min: 8.14, max: 16.27 }, { level: 1, min: 0.00, max: 8.14 }], standard: { '頂標': 13, '前標': 12, '均標': 10, '後標': 8, '底標': 6 } },
+                '自然': { type: 'single', max: { single: 128 }, gradeRanges: [{ level: 15, min: 112.55, max: 128.00 }, { level: 14, min: 104.51, max: 112.55 }, { level: 13, min: 96.47, max: 104.51 }, { level: 12, min: 88.43, max: 96.47 }, { level: 11, min: 80.39, max: 88.43 }, { level: 10, min: 72.35, max: 80.39 }, { level: 9, min: 64.31, max: 72.35 }, { level: 8, min: 56.28, max: 64.31 }, { level: 7, min: 48.24, max: 56.28 }, { level: 6, min: 40.20, max: 48.24 }, { level: 5, min: 32.16, max: 40.20 }, { level: 4, min: 24.12, max: 32.16 }, { level: 3, min: 16.08, max: 24.12 }, { level: 2, min: 8.04, max: 16.08 }, { level: 1, min: 0.00, max: 8.04 }], standard: { '頂標': 13, '前標': 12, '均標': 9, '後標': 6, '底標': 5 } }
+            }
         };
 
+        // 全域變數來儲存每個科目的輸入值
         const scoresCache = {};
+
         const messageBox = document.getElementById('messageBox');
         const compScoreContainer = document.getElementById('compScoreContainer');
         const writingScoreContainer = document.getElementById('writingScoreContainer');
@@ -103,18 +133,20 @@
         const standardSpan = document.getElementById('standard');
         const correctRateSpan = document.getElementById('correctRate');
 
-        // 單一輸入框
+        // Dynamically create single score input
         const singleScoreHTML = `
             <div id="singleScoreContainer" class="mb-6 hidden">
-                <label for="singleScore" class="block text-gray-600 font-medium mb-2" id="singleScoreLabel">原始分數</label>
+                <label for="singleScore" class="block text-gray-600 font-medium mb-2" id="singleScoreLabel">原始分數<span class="text-xs text-gray-400 ml-2"></span></label>
                 <input type="number" id="singleScore" class="w-full p-3 rounded-md border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
             </div>
         `;
         document.getElementById('scoreInputContainer').insertAdjacentHTML('beforeend', singleScoreHTML);
         const singleScoreContainer = document.getElementById('singleScoreContainer');
+        const singleScoreLabel = document.getElementById('singleScoreLabel');
         const singleScoreInput = document.getElementById('singleScore');
         const compScoreInput = document.getElementById('compScore');
         const writingScoreInput = document.getElementById('writingScore');
+
 
         function showMessage(message, type = 'error') {
             messageBox.textContent = message;
@@ -136,19 +168,25 @@
         }
 
         function saveCurrentInput(subject, year) {
-            if (!scoresCache[year]) scoresCache[year] = {};
+            if (!scoresCache[year]) {
+                scoresCache[year] = {};
+            }
             if (subjectData[year][subject].type === 'composite') {
-                scoresCache[year][subject] = { comp: compScoreInput.value, writing: writingScoreInput.value };
+                scoresCache[year][subject] = {
+                    comp: compScoreInput.value,
+                    writing: writingScoreInput.value
+                };
             } else {
-                scoresCache[year][subject] = { single: singleScoreInput.value };
+                scoresCache[year][subject] = {
+                    single: singleScoreInput.value
+                };
             }
         }
 
         function restoreInput(subject, year) {
             clearResults();
             const cachedData = scoresCache[year] && scoresCache[year][subject];
-            const isChinese = subject === '國文';
-
+            
             if (subjectData[year][subject].type === 'composite') {
                 compScoreContainer.classList.remove('hidden');
                 writingScoreContainer.classList.remove('hidden');
@@ -164,20 +202,15 @@
             } else {
                 compScoreContainer.classList.add('hidden');
                 writingScoreContainer.classList.add('hidden');
-
-                if (isChinese) {
-                    singleScoreContainer.classList.remove('hidden');
-                } else {
-                    singleScoreContainer.classList.add('hidden');
-                }
-
-                // 答對率：國文/數學/英文不顯示
-                if (['國文','數學A','數學B','英文'].includes(subject)) {
-                    resultRateContainer.classList.add('hidden');
-                } else {
-                    resultRateContainer.classList.remove('hidden');
-                }
-
+                singleScoreContainer.classList.remove('hidden');
+                resultRateContainer.classList.remove('hidden');
+                
+                const maxScore = subjectData[year][subject].max.single;
+                singleScoreLabel.innerHTML = `原始分數<span class="text-xs text-gray-400 ml-2">(0-${maxScore})</span>`;
+                singleScoreInput.placeholder = `0-${maxScore}`;
+                singleScoreInput.max = maxScore;
+                singleScoreInput.min = 0;
+                
                 if (cachedData) {
                     singleScoreInput.value = cachedData.single || '';
                 } else {
@@ -191,35 +224,37 @@
             const selectedYear = document.querySelector('input[name="year"]:checked').value;
             const subjectInfo = subjectData[selectedYear][subject];
             let totalScore;
-
+            
             messageBox.classList.add('hidden');
             
             if (subjectInfo.type === 'composite') {
                 const compScore = parseFloat(compScoreInput.value);
                 const writingScore = parseFloat(writingScoreInput.value);
-                if (isNaN(compScore) || isNaN(writingScore)) {
-                    showMessage('請輸入有效分數');
+
+                if (isNaN(compScore) || isNaN(writingScore) || compScore < 0 || compScore > subjectInfo.max.comp || writingScore < 0 || writingScore > subjectInfo.max.writing) {
+                    showMessage(`請輸入有效的國綜（0-${subjectInfo.max.comp}）與國寫（0-${subjectInfo.max.writing}）分數。`);
                     return;
                 }
+                
                 totalScore = (compScore * 0.5) + writingScore;
                 totalScoreSpan.textContent = totalScore.toFixed(2);
-                resultRateContainer.classList.add('hidden');
+                document.getElementById('resultRate').classList.add('hidden');
             } else {
-                const singleScore = parseFloat(singleScoreInput.value) || 0;
+                const singleScore = parseFloat(singleScoreInput.value);
+                if (isNaN(singleScore) || singleScore < 0 || singleScore > subjectInfo.max.single) {
+                    showMessage(`請輸入有效的原始分數（0-${subjectInfo.max.single}）。`);
+                    return;
+                }
+                
                 totalScore = singleScore;
                 totalScoreSpan.textContent = totalScore.toFixed(2);
-
+                
                 const correctRate = (totalScore / subjectInfo.max.single) * 100;
                 correctRateSpan.textContent = correctRate.toFixed(2);
-
-                if (['國文','數學A','數學B','英文'].includes(subject)) {
-                    resultRateContainer.classList.add('hidden');
-                } else {
-                    resultRateContainer.classList.remove('hidden');
-                }
+                document.getElementById('resultRate').classList.remove('hidden');
             }
 
-            // 計算級分
+            // Find grade level
             let gradeLevel = 0;
             if (totalScore > 0) {
                 for (const range of subjectInfo.gradeRanges) {
@@ -231,39 +266,69 @@
             }
             gradeLevelSpan.textContent = gradeLevel;
 
-            // 五標
+            // Find standard
             const currentStandards = subjectInfo.standard;
             let standard = '沒有落於五標';
-            if (gradeLevel >= currentStandards['頂標']) standard = '頂標';
-            else if (gradeLevel >= currentStandards['前標']) standard = '前標';
-            else if (gradeLevel >= currentStandards['均標']) standard = '均標';
-            else if (gradeLevel >= currentStandards['後標']) standard = '後標';
-            else if (gradeLevel >= currentStandards['底標']) standard = '底標';
+            if (gradeLevel >= currentStandards['頂標']) {
+                standard = '頂標';
+            } else if (gradeLevel >= currentStandards['前標']) {
+                standard = '前標';
+            } else if (gradeLevel >= currentStandards['均標']) {
+                standard = '均標';
+            } else if (gradeLevel >= currentStandards['後標']) {
+                standard = '後標';
+            } else if (gradeLevel >= currentStandards['底標']) {
+                standard = '底標';
+            }
             standardSpan.textContent = standard;
         }
 
-        // tab 切換
+        // Add event listeners for tabs
         document.querySelectorAll('.tab-button').forEach(button => {
             button.addEventListener('click', (e) => {
                 const currentActiveButton = document.querySelector('.tab-button.bg-white');
                 const prevSubject = currentActiveButton.dataset.subject;
                 const prevYear = document.querySelector('input[name="year"]:checked').value;
+                
+                // Save current input before switching
                 saveCurrentInput(prevSubject, prevYear);
-
-                currentActiveButton.classList.remove('bg-white','text-gray-800','shadow-md');
-                currentActiveButton.classList.add('text-gray-600','hover:text-gray-800');
-                e.target.classList.add('bg-white','text-gray-800','shadow-md');
-                e.target.classList.remove('text-gray-600','hover:text-gray-800');
-
-                restoreInput(e.target.dataset.subject, prevYear);
+                
+                if (currentActiveButton) {
+                    currentActiveButton.classList.remove('bg-white', 'text-gray-800', 'shadow-md');
+                    currentActiveButton.classList.add('text-gray-600', 'hover:text-gray-800');
+                }
+                
+                e.target.classList.add('bg-white', 'text-gray-800', 'shadow-md');
+                e.target.classList.remove('text-gray-600', 'hover:text-gray-800');
+                
+                const newSubject = e.target.dataset.subject;
+                restoreInput(newSubject, prevYear);
             });
         });
 
-        // 初始化
+        // Add event listeners for radio buttons
+        document.querySelectorAll('input[name="year"]').forEach(radio => {
+            radio.addEventListener('change', () => {
+                const currentSubject = document.querySelector('.tab-button.bg-white').dataset.subject;
+                const newYear = radio.value;
+                const oldYear = newYear === '114' ? '113' : '114';
+
+                // Save current subject's input for the previous year
+                saveCurrentInput(currentSubject, oldYear);
+                
+                // Restore input for the current subject and new year
+                restoreInput(currentSubject, newYear);
+            });
+        });
+
+        // Initialize with default subject (國文)
         window.onload = () => {
             const firstTabButton = document.querySelector('.tab-button[data-subject="國文"]');
-            firstTabButton.classList.add('bg-white','text-gray-800','shadow-md');
-            restoreInput('國文', document.querySelector('input[name="year"]:checked').value);
+            if (firstTabButton) {
+                firstTabButton.classList.add('bg-white', 'text-gray-800', 'shadow-md');
+                firstTabButton.classList.remove('text-gray-600', 'hover:text-gray-800');
+                restoreInput(firstTabButton.dataset.subject, document.querySelector('input[name="year"]:checked').value);
+            }
         };
     </script>
 
