@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>學測成績計算器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="container bg-white rounded-xl shadow-lg p-6 sm:p-8">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">學測成績計算器</h1>
+            <p class="text-gray-500 text-sm sm:text-base">選擇科目與學測年份，輸入分數後點擊計算。</p>
+        </div>
+
+        <!-- Subject Selection Tabs -->
+        <div class="flex justify-center mb-6 overflow-x-auto">
+            <div class="flex space-x-2 sm:space-x-4 p-1 rounded-full bg-gray-100 shadow-inner">
+                <button data-subject="國文" class="tab-button text-gray-600 hover:text-gray-800 py-2 px-4 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500">國文</button>
+                <button data-subject="英文" class="tab-button text-gray-600 hover:text-gray-800 py-2 px-4 rounded-full transition-all duration-200">英文</button>
+                <button data-subject="數學A" class="tab-button text-gray-600 hover:text-gray-800 py-2 px-4 rounded-full transition-all duration-200">數學A</button>
+                <button data-subject="數學B" class="tab-button text-gray-600 hover:text-gray-800 py-2 px-4 rounded-full transition-all duration-200">數學B</button>
+                <button data-subject="社會" class="tab-button text-gray-600 hover:text-gray-800 py-2 px-4 rounded-full transition-all duration-200">社會</button>
+                <button data-subject="自然" class="tab-button text-gray-600 hover:text-gray-800 py-2 px-4 rounded-full transition-all duration-200">自然</button>
+            </div>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Input Section -->
+            <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">輸入分數</h2>
+                
+                <div id="scoreInputContainer">
+                    <div id="compScoreContainer" class="mb-4">
+                        <label for="compScore" class="block text-gray-600 font-medium mb-2">國綜（選擇題）原始分數<span class="text-xs text-gray-400 ml-2">(0-100)</span></label>
+                        <input type="number" id="compScore" class="w-full p-3 rounded-md border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200" placeholder="0-100" min="0" max="100">
+                    </div>
+                    
+                    <div id="writingScoreContainer" class="mb-6">
+                        <label for="writingScore" class="block text-gray-600 font-medium mb-2">國寫原始分數<span class="text-xs text-gray-400 ml-2">(0-50)</span></label>
+                        <input type="number" id="writingScore" class="w-full p-3 rounded-md border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200" placeholder="0-50" min="0" max="50">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">計算結果</h2>
+                
+                <div id="results" class="space-y-4">
+                    <div id="resultTotal" class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md">
+                        <p class="font-medium">原始總分：<span id="totalScore" class="font-bold">--</span> 分</p>
+                    </div>
+                    <div id="resultRate" class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md hidden">
+                        <p class="font-medium">答對率：<span id="correctRate" class="font-bold">--</span>%</p>
+                    </div>
+                    
+                    <div id="resultLevel" class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-md">
+                        <p class="font-medium">級分：<span id="gradeLevel" class="font-bold">--</span> 級分</p>
+                    </div>
+                    
+                    <div id="resultStandard" class="bg-purple-100 border-l-4 border-purple-500 text-purple-700 p-4 rounded-md">
+                        <p class="font-medium">五標位置：<span id="standard" class="font-bold">--</span></p>
+                    </div>
+                </div>
+
+                <button onclick="calculateScore()" class="mt-6 w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-md shadow-lg hover:bg-blue-700 transition-colors duration-200 transform hover:scale-105">
+                    計算我的成績
+                </button>
+
+                <div id="messageBox" class="mt-4 hidden p-3 rounded-md text-sm" role="alert"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const subjectData = {
+            // 這裡沿用你原本的 subjectData (114/113年度) ...
+            // 為了簡潔我省略內容，只要保留原本就好
+        };
+
+        const scoresCache = {};
+        const messageBox = document.getElementById('messageBox');
+        const compScoreContainer = document.getElementById('compScoreContainer');
+        const writingScoreContainer = document.getElementById('writingScoreContainer');
+        const resultRateContainer = document.getElementById('resultRate');
+        const totalScoreSpan = document.getElementById('totalScore');
+        const gradeLevelSpan = document.getElementById('gradeLevel');
+        const standardSpan = document.getElementById('standard');
+        const correctRateSpan = document.getElementById('correctRate');
+
+        // 單一輸入框
+        const singleScoreHTML = `
+            <div id="singleScoreContainer" class="mb-6 hidden">
+                <label for="singleScore" class="block text-gray-600 font-medium mb-2" id="singleScoreLabel">原始分數</label>
+                <input type="number" id="singleScore" class="w-full p-3 rounded-md border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200">
+            </div>
+        `;
+        document.getElementById('scoreInputContainer').insertAdjacentHTML('beforeend', singleScoreHTML);
+        const singleScoreContainer = document.getElementById('singleScoreContainer');
+        const singleScoreInput = document.getElementById('singleScore');
+        const compScoreInput = document.getElementById('compScore');
+        const writingScoreInput = document.getElementById('writingScore');
+
+        function showMessage(message, type = 'error') {
+            messageBox.textContent = message;
+            messageBox.className = 'mt-4 p-3 rounded-md text-sm';
+            if (type === 'error') {
+                messageBox.classList.add('bg-red-100', 'text-red-700');
+            } else {
+                messageBox.classList.add('bg-green-100', 'text-green-700');
+            }
+            messageBox.classList.remove('hidden');
+        }
+
+        function clearResults() {
+            totalScoreSpan.textContent = '--';
+            gradeLevelSpan.textContent = '--';
+            standardSpan.textContent = '--';
+            correctRateSpan.textContent = '--';
+            messageBox.classList.add('hidden');
+        }
+
+        function saveCurrentInput(subject, year) {
+            if (!scoresCache[year]) scoresCache[year] = {};
+            if (subjectData[year][subject].type === 'composite') {
+                scoresCache[year][subject] = { comp: compScoreInput.value, writing: writingScoreInput.value };
+            } else {
+                scoresCache[year][subject] = { single: singleScoreInput.value };
+            }
+        }
+
+        function restoreInput(subject, year) {
+            clearResults();
+            const cachedData = scoresCache[year] && scoresCache[year][subject];
+            const isChinese = subject === '國文';
+
+            if (subjectData[year][subject].type === 'composite') {
+                compScoreContainer.classList.remove('hidden');
+                writingScoreContainer.classList.remove('hidden');
+                singleScoreContainer.classList.add('hidden');
+                resultRateContainer.classList.add('hidden');
+                if (cachedData) {
+                    compScoreInput.value = cachedData.comp || '';
+                    writingScoreInput.value = cachedData.writing || '';
+                } else {
+                    compScoreInput.value = '';
+                    writingScoreInput.value = '';
+                }
+            } else {
+                compScoreContainer.classList.add('hidden');
+                writingScoreContainer.classList.add('hidden');
+
+                if (isChinese) {
+                    singleScoreContainer.classList.remove('hidden');
+                } else {
+                    singleScoreContainer.classList.add('hidden');
+                }
+
+                // 答對率：國文/數學/英文不顯示
+                if (['國文','數學A','數學B','英文'].includes(subject)) {
+                    resultRateContainer.classList.add('hidden');
+                } else {
+                    resultRateContainer.classList.remove('hidden');
+                }
+
+                if (cachedData) {
+                    singleScoreInput.value = cachedData.single || '';
+                } else {
+                    singleScoreInput.value = '';
+                }
+            }
+        }
+
+        function calculateScore() {
+            const subject = document.querySelector('.tab-button.bg-white').dataset.subject;
+            const selectedYear = document.querySelector('input[name="year"]:checked').value;
+            const subjectInfo = subjectData[selectedYear][subject];
+            let totalScore;
+
+            messageBox.classList.add('hidden');
+            
+            if (subjectInfo.type === 'composite') {
+                const compScore = parseFloat(compScoreInput.value);
+                const writingScore = parseFloat(writingScoreInput.value);
+                if (isNaN(compScore) || isNaN(writingScore)) {
+                    showMessage('請輸入有效分數');
+                    return;
+                }
+                totalScore = (compScore * 0.5) + writingScore;
+                totalScoreSpan.textContent = totalScore.toFixed(2);
+                resultRateContainer.classList.add('hidden');
+            } else {
+                const singleScore = parseFloat(singleScoreInput.value) || 0;
+                totalScore = singleScore;
+                totalScoreSpan.textContent = totalScore.toFixed(2);
+
+                const correctRate = (totalScore / subjectInfo.max.single) * 100;
+                correctRateSpan.textContent = correctRate.toFixed(2);
+
+                if (['國文','數學A','數學B','英文'].includes(subject)) {
+                    resultRateContainer.classList.add('hidden');
+                } else {
+                    resultRateContainer.classList.remove('hidden');
+                }
+            }
+
+            // 計算級分
+            let gradeLevel = 0;
+            if (totalScore > 0) {
+                for (const range of subjectInfo.gradeRanges) {
+                    if (totalScore > range.min && totalScore <= range.max) {
+                        gradeLevel = range.level;
+                        break;
+                    }
+                }
+            }
+            gradeLevelSpan.textContent = gradeLevel;
+
+            // 五標
+            const currentStandards = subjectInfo.standard;
+            let standard = '沒有落於五標';
+            if (gradeLevel >= currentStandards['頂標']) standard = '頂標';
+            else if (gradeLevel >= currentStandards['前標']) standard = '前標';
+            else if (gradeLevel >= currentStandards['均標']) standard = '均標';
+            else if (gradeLevel >= currentStandards['後標']) standard = '後標';
+            else if (gradeLevel >= currentStandards['底標']) standard = '底標';
+            standardSpan.textContent = standard;
+        }
+
+        // tab 切換
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const currentActiveButton = document.querySelector('.tab-button.bg-white');
+                const prevSubject = currentActiveButton.dataset.subject;
+                const prevYear = document.querySelector('input[name="year"]:checked').value;
+                saveCurrentInput(prevSubject, prevYear);
+
+                currentActiveButton.classList.remove('bg-white','text-gray-800','shadow-md');
+                currentActiveButton.classList.add('text-gray-600','hover:text-gray-800');
+                e.target.classList.add('bg-white','text-gray-800','shadow-md');
+                e.target.classList.remove('text-gray-600','hover:text-gray-800');
+
+                restoreInput(e.target.dataset.subject, prevYear);
+            });
+        });
+
+        // 初始化
+        window.onload = () => {
+            const firstTabButton = document.querySelector('.tab-button[data-subject="國文"]');
+            firstTabButton.classList.add('bg-white','text-gray-800','shadow-md');
+            restoreInput('國文', document.querySelector('input[name="year"]:checked').value);
+        };
+    </script>
+
+</body>
+</html>
