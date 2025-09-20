@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>學測國文成績計算器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="container bg-white rounded-xl shadow-lg p-6 sm:p-8">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">學測國文成績計算器</h1>
+            <p class="text-gray-500 text-sm sm:text-base">請輸入您的國綜與國寫分數，選擇學年度後點擊計算。</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Input Section -->
+            <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">輸入分數</h2>
+                
+                <div class="mb-4">
+                    <label for="compScore" class="block text-gray-600 font-medium mb-2">國綜（選擇題）原始分數</label>
+                    <input type="number" id="compScore" class="w-full p-3 rounded-md border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200" placeholder="0-100" min="0" max="100">
+                </div>
+                
+                <div class="mb-6">
+                    <label for="writingScore" class="block text-gray-600 font-medium mb-2">國寫原始分數</label>
+                    <input type="number" id="writingScore" class="w-full p-3 rounded-md border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-200" placeholder="0-50" min="0" max="50">
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-medium text-gray-700 mb-2">選擇參考學年度</h3>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <label class="flex items-center space-x-2 cursor-pointer p-3 rounded-md border-2 border-gray-300 hover:border-blue-400 transition-all duration-200">
+                            <input type="radio" name="year" value="114" checked class="form-radio text-blue-500 ring-blue-500">
+                            <span class="text-gray-700">114 學年度</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer p-3 rounded-md border-2 border-gray-300 hover:border-blue-400 transition-all duration-200">
+                            <input type="radio" name="year" value="113" class="form-radio text-blue-500 ring-blue-500">
+                            <span class="text-gray-700">113 學年度</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="bg-gray-50 p-6 rounded-lg shadow-inner">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">計算結果</h2>
+                
+                <div id="results" class="space-y-4">
+                    <div id="resultTotal" class="bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded-md">
+                        <p class="font-medium">國文原始總分：<span id="totalScore" class="font-bold">--</span> 分</p>
+                    </div>
+                    
+                    <div id="resultLevel" class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded-md">
+                        <p class="font-medium">國文級分：<span id="gradeLevel" class="font-bold">--</span> 級分</p>
+                    </div>
+                    
+                    <div id="resultStandard" class="bg-purple-100 border-l-4 border-purple-500 text-purple-700 p-4 rounded-md">
+                        <p class="font-medium">五標位置：<span id="standard" class="font-bold">--</span></p>
+                    </div>
+                </div>
+
+                <button onclick="calculateScore()" class="mt-6 w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-md shadow-lg hover:bg-blue-700 transition-colors duration-200 transform hover:scale-105">
+                    計算我的成績
+                </button>
+
+                <div id="messageBox" class="mt-4 hidden p-3 rounded-md text-sm" role="alert"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 114 學年度級分與原始分數對照表
+        const gradeRanges114 = [
+            { level: 15, min: 74.06, max: 100.00 },
+            { level: 14, min: 68.77, max: 74.06 },
+            { level: 13, min: 63.48, max: 68.77 },
+            { level: 12, min: 58.19, max: 63.48 },
+            { level: 11, min: 52.90, max: 58.19 },
+            { level: 10, min: 47.61, max: 52.90 },
+            { level: 9, min: 42.32, max: 47.61 },
+            { level: 8, min: 37.03, max: 42.32 },
+            { level: 7, min: 31.74, max: 37.03 },
+            { level: 6, min: 26.45, max: 31.74 },
+            { level: 5, min: 21.16, max: 26.45 },
+            { level: 4, min: 15.87, max: 21.16 },
+            { level: 3, min: 10.58, max: 15.87 },
+            { level: 2, min: 5.29, max: 10.58 },
+            { level: 1, min: 0.00, max: 5.29 }
+        ];
+
+        // 113 學年度級分與原始分數對照表
+        const gradeRanges113 = [
+            { level: 15, min: 74.06, max: 100.00 },
+            { level: 14, min: 68.77, max: 74.06 },
+            { level: 13, min: 63.48, max: 68.77 },
+            { level: 12, min: 58.19, max: 63.48 },
+            { level: 11, min: 52.90, max: 58.19 },
+            { level: 10, min: 47.61, max: 52.90 },
+            { level: 9, min: 42.32, max: 47.61 },
+            { level: 8, min: 37.03, max: 42.32 },
+            { level: 7, min: 31.74, max: 37.03 },
+            { level: 6, min: 26.45, max: 31.74 },
+            { level: 5, min: 21.16, max: 26.45 },
+            { level: 4, min: 15.87, max: 21.16 },
+            { level: 3, min: 10.58, max: 15.87 },
+            { level: 2, min: 5.29, max: 10.58 },
+            { level: 1, min: 0.00, max: 5.29 }
+        ];
+
+        // 五標對照表
+        const standards = {
+            '114': {
+                '頂標': 13,
+                '前標': 12,
+                '均標': 10,
+                '後標': 9,
+                '底標': 7
+            },
+            '113': {
+                '頂標': 13,
+                '前標': 12,
+                '均標': 11,
+                '後標': 9,
+                '底標': 8
+            }
+        };
+
+        const messageBox = document.getElementById('messageBox');
+        
+        function showMessage(message, type = 'error') {
+            messageBox.textContent = message;
+            messageBox.classList.remove('hidden', 'bg-red-100', 'bg-green-100', 'text-red-700', 'text-green-700');
+            if (type === 'error') {
+                messageBox.classList.add('bg-red-100', 'text-red-700');
+            } else {
+                messageBox.classList.add('bg-green-100', 'text-green-700');
+            }
+        }
+
+        function calculateScore() {
+            const compScoreInput = document.getElementById('compScore');
+            const writingScoreInput = document.getElementById('writingScore');
+            const totalScoreSpan = document.getElementById('totalScore');
+            const gradeLevelSpan = document.getElementById('gradeLevel');
+            const standardSpan = document.getElementById('standard');
+            const selectedYear = document.querySelector('input[name="year"]:checked').value;
+
+            // 隱藏訊息框
+            messageBox.classList.add('hidden');
+
+            let compScore = parseFloat(compScoreInput.value);
+            let writingScore = parseFloat(writingScoreInput.value);
+
+            // 驗證輸入
+            if (isNaN(compScore) || isNaN(writingScore) || compScore < 0 || compScore > 100 || writingScore < 0 || writingScore > 50) {
+                showMessage('請輸入有效的國綜（0-100）與國寫（0-50）分數。');
+                return;
+            }
+
+            // 1. 計算國文原始分數
+            const totalScore = (compScore * 0.5) + writingScore;
+            totalScoreSpan.textContent = totalScore.toFixed(2);
+
+            // 根據選擇的學年度選擇級分對照表
+            const activeGradeRanges = selectedYear === '114' ? gradeRanges114 : gradeRanges113;
+
+            // 2. 找出對應的級分
+            let gradeLevel = 0;
+            if (totalScore === 0) {
+                gradeLevel = 0;
+            } else {
+                for (const range of activeGradeRanges) {
+                    if (totalScore > range.min && totalScore <= range.max) {
+                        gradeLevel = range.level;
+                        break;
+                    }
+                }
+            }
+            gradeLevelSpan.textContent = gradeLevel;
+
+            // 3. 判斷五標位置
+            const currentStandards = standards[selectedYear];
+            let standard = '沒有落於五標';
+            if (gradeLevel >= currentStandards['頂標']) {
+                standard = '頂標';
+            } else if (gradeLevel >= currentStandards['前標']) {
+                standard = '前標';
+            } else if (gradeLevel >= currentStandards['均標']) {
+                standard = '均標';
+            } else if (gradeLevel >= currentStandards['後標']) {
+                standard = '後標';
+            } else if (gradeLevel >= currentStandards['底標']) {
+                standard = '底標';
+            }
+            standardSpan.textContent = standard;
+        }
+    </script>
+
+</body>
+</html>
